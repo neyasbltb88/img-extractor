@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>CSS in JSON</title>
+
+    <link rel="stylesheet" href="./prism/prism.css">
+</head>
+
+<body class="test">
+
+
+    <div class="container">
+
+        <a download="AsmqELFpnZY.jpg" href="https://pp.userapi.com/c849120/v849120799/f6021/AsmqELFpnZY.jpg" title="1000x700" class="download_link">HD2</a>
+
+        <!-- <a download="AsmqELFpnZY.jpg" href="./AsmqELFpnZY.jpg" title="1000x700" class="pv_more_act_item vk_ph_sz_hdlink">HD2</a> -->
+
+        <a href="#" class="download_img">download</a>
+
+        <div class="img_container"></div>
+
+        <h2>Все стили на этой странице(кроме подсветки кода) вставлены с помощью CSSinJSON</h2>
+
+        <div class="section section_4">
+
+        </div>
+
+        <div class="section section_1">
+            <h3>Инициализация плагина</h3>
+            <pre class="pre_block"><code class="language-javascript">const CssInJson = new CSSinJSON({
+    // Стили в виде объекта или строки JSON
+    style: {object | string},
+    
+    // Селектор(ы) корневого элемента, если передан(ы) - включаются изолированные стили внутри него(них)
+    scopedElem: {string | array} // Необязательный параметр
+}); </code></pre>
+        </div>
+
+        <div class="section section_2">
+            <h3>Пример изоляции стилей: </h3>
+
+            <pre class="test_scoped">
+<div class="scoped_class">
+    <div class="test">.test внутри .scoped_class</div>
+</div>
+<div class="scoped_class2">
+    <div class="test">.test внутри .scoped_class2</div>
+</div>
+<div class="test">.test рядом со .scoped_class</div>
+            </pre>
+
+            <p>Блоки выше имеют следующую структуру:</p>
+            <pre class="pre_block"><code class="language-markup">&lt;div class="scoped_class">
+    &lt;div class="test">.test внутри .scoped_class&lt;/div>
+&lt;/div>
+
+&lt;div class="scoped_class2">
+    &lt;div class="test">.test внутри .scoped_class2&lt;/div>
+&lt;/div>
+
+&lt;div class="test">.test рядом со .scoped_class&lt;/div></code></pre>
+            <p>Как можно заметить, все 4 блока имеют класс .test, но красные только первые 3 из них. При этом, описывая стили, мы указываем красный цвет для всех классов .test. Это достигается благодаря тому, что при инициализации плагина мы передаем второй,
+                не обязательный параметр, где перечисляем селекторы тех блоков, внутри которых хотим применять передаваемые стили. На всю остальную страницу они влиять не будут. Это позволяет решить многие проблемы с пересечением имен селекторов.
+            </p>
+            <p>Стили для них инициализированы следующим образом:</p>
+            <pre class="pre_block"><code class="language-javascript">const CssInJson2 = new CSSinJSON({
+    style: {
+        '.scoped_class, .scoped_class2': {
+            paddingLeft: '30px'
+        },
+        '.test': {
+            color: 'red'
+        },
+        '.test:before, .test:after': {
+            content: '" *** "',
+        }
+    },
+    scopedElem: ['.scoped_class', '.scoped_class2']
+});</code></pre>
+            <p>В результате получаем:</p>
+            <pre class="test_result pre_block">
+<code class="test_result_style language-markup"></code>
+
+<code class="test_result_html language-markup"></code></pre>
+        </div>
+
+        <div class="section section_3">
+            <div class="rich_h3">
+                <h3 class="inline">На этой странице в head вставлен сгенерированный тег: &nbsp;</h3>
+                <pre class="inline"><code class=" style_info language-markup"></code></pre>
+            </div>
+            <p>Базовый селектор scoped: <b class="base_selector"></b></p>
+            <p>Стили в теге:</p>
+            <pre class="pre_block"><code class="style_show language-css"></code></pre>
+        </div>
+
+        <div class="section section_4">
+            <h3 class="json_info">Исходный json стилей</h3>
+            <pre class="pre_block"><code class="json_show language-json"></code></pre>
+        </div>
+
+
+    </div>
+
+
+
+
+
+    <script src="./prism/prism.js"></script>
+    <script src="./js/css-in-json.min.js"></script>
+    <script src="./js/common.js"></script>
+</body>
+
+</html>

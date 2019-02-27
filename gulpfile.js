@@ -152,8 +152,7 @@ gulp.task('watch', ['sass', 'js', 'browser-sync'], function() {
 })
 
 gulp.task('build', ['removedist', 'sass'], function() {
-    let file = './app/js/app.min.js'
-        // let file_name = path.basename(file)
+    let file = 'app/js/app.js'
     let file_name = 'imgextractor.js'
     let bundler = browserify(file, { debug: true })
         .transform(babelify, {
