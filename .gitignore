@@ -3,3 +3,4 @@ package-lock.json
 *.code-workspace
 app/js/app.min.js
 app/js/maps
+app/js/maps/*.map
