@@ -19,5 +19,6 @@ window.imgExtractor = new ImgExtractor({
 
 
 console.log(imgExtractor);
+console.log(imgExtractor.interface);
 
 // window.imgExtractor.downloadAll();

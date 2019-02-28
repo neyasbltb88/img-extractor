@@ -1,6 +1,10 @@
 import '../libs/CSSinJSON/app/js/css-in-json';
 import ImgExtractorInterfaceTemplates from './interface-templates';
 
+// TODO: По возможности реализовать два метода:
+// setItems и setFilter, их будет вызывать основной класс при переинициализации
+// Но может быть проще будет убивать интерфейс полностью и создавать новый
+
 export default class ImgExtractorInterface {
     constructor(params = {}) {
         let that = this;
@@ -8,6 +12,10 @@ export default class ImgExtractorInterface {
         this.layout_id = params.layout_id;
         this.items = params.items;
         this._filter = params.filter;
+
+        this.filter_attr = 'imgextractorfilter';
+        this.list_item_slected = 'selected';
+        this.list_item_id = 'imgextractorid';
 
         this.parts = {
             layout: null,
@@ -17,12 +25,11 @@ export default class ImgExtractorInterface {
             list: null
         };
 
-        this.list_item_slected = 'selected';
-
         this.cssinjs = null;
         this.template = new ImgExtractorInterfaceTemplates();
 
         this.state = {
+            // Показан/скрыт интерфейс
             _opened: true,
             set opened(val) {
                 if (typeof val === 'boolean') {
@@ -35,7 +42,36 @@ export default class ImgExtractorInterface {
             },
             get opened() {
                 return this._opened;
+            },
+
+            // Количество выбранных айтомов
+            _selected_items: 0,
+            set selected_items(val) {
+                if (typeof val === 'number' && val >= 0 && val <= this._total_items) {
+                    this._selected_items = val;
+
+                    // TODO: Тут надо запускать рендер количества айтемов для шапки
+                    that._renderDownloadCounter();
+                }
+            },
+            get selected_items() {
+                return this._selected_items;
+            },
+
+            // Всего айтемов
+            _total_items: 0,
+            set total_items(val) {
+                if (typeof val === 'number' && val >= 0) {
+                    this._total_items = val;
+
+                    // TODO: Тут надо запускать рендер количества айтемов для шапки
+                    that._renderDownloadCounter();
+                }
+            },
+            get total_items() {
+                return this._total_items;
             }
+
         };
 
 
@@ -43,10 +79,50 @@ export default class ImgExtractorInterface {
         this.init();
     }
 
+    _totalCounter() {
+        this.state.total_items = this.items.length;
+    }
+
+    _selectedCounter() {
+        let count = 0;
+        this.items.forEach(item => {
+            if (item.selected && this._filter[item.ext]) {
+                count++;
+            }
+        });
+
+        this.state.selected_items = count;
+    }
+
+    _renderDownloadCounter() {
+        let counter_wrap = this.parts.header.querySelector('.download_counter');
+
+        counter_wrap.innerHTML = this.template.getDownloadCounterTemplate({
+            selected: this.state.selected_items,
+            total: this.state.total_items
+        });
+    }
+
+    // TODO: Доделать метод выбора айтема
     _handlerListItemSelect(item) {
-        item.classList.toggle(this.list_item_slected);
+        // item.classList.toggle(this.list_item_slected);
+        // получаем из атрибута ID айтема
+        let item_id = +item.dataset[this.list_item_id];
+        // По ID находим индекс айтема в массиве
+        let item_index = this.items.findIndex(item => item.id === item_id);
+
+        // Меняем значение свойства selected у айтема
+        this.items[item_index].selected = !this.items[item_index].selected;
+
+        // Отображаем состояние selected в виде класса на айтеме
+        if (this.items[item_index].selected) {
+            item.classList.add(this.list_item_slected);
+        } else {
+            item.classList.remove(this.list_item_slected);
+        }
 
         // TODO: Здесь надо будет вызывать фильтрацию выбранных айтомов
+        this._selectedCounter();
     }
 
     _makeList() {
@@ -61,7 +137,8 @@ export default class ImgExtractorInterface {
 
         items.forEach(item => {
             let list_item = document.createElement('div');
-            list_item.className = `list_item ${this.list_item_slected}`;
+            list_item.className = `list_item ${item.selected ? this.list_item_slected : ''}`;
+            list_item.dataset[this.list_item_id] = item.id;
             list_item.innerHTML = this.template.getListItem(item);
 
             list_item.addEventListener('click', e => {
@@ -100,12 +177,12 @@ export default class ImgExtractorInterface {
 
         // Создаем кнопки по объекту фильтра
         for (let filter_name in this._filter) {
-            let btn = this.template.getFilterBtnTemplate(filter_name);
+            let btn = this.template.getFilterBtnTemplate(filter_name, this.filter_attr);
 
             // Вешаем на полученные кнопки обработчик переключения фильтра
             btn.addEventListener('click', e => {
                 let elem = e.currentTarget;
-                let res = this.filter(elem.dataset.filter);
+                let res = this.filter(elem.dataset[this.filter_attr]);
                 res ? elem.classList.add('active') : elem.classList.remove('active')
             });
 
@@ -127,6 +204,7 @@ export default class ImgExtractorInterface {
 
         // TODO: Тут надо будет запускать рендер фильтрации
         this.listRender();
+        this._selectedCounter();
 
         return this._filter[name];
     }
@@ -163,6 +241,10 @@ export default class ImgExtractorInterface {
     init() {
         // Создать контейнер интерфейса
         this._makeLayout();
+
+        // Отобразим счетчик выбранных айтемов
+        this._totalCounter();
+        this._selectedCounter();
 
         // Создаем блок фильтра
         this._makeFilter();

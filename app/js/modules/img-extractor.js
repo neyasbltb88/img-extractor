@@ -8,6 +8,7 @@ export default class ImgExtractor {
         this.name_suffix = (params.rename && params.rename.suffix) ? params.rename.suffix : '';
         this.default_name_ext = 'svg';
         this.name_index = 0;
+        this.itemID = 0;
 
         this.autodownload = params.autodownload;
 
@@ -32,8 +33,8 @@ export default class ImgExtractor {
     _getTypeFilter() {
         let filter = {};
 
-        for (let type in this.elems) {
-            filter[type] = true;
+        for (let ext in this.elems) {
+            filter[ext] = true;
         }
 
         return filter;
@@ -61,9 +62,11 @@ export default class ImgExtractor {
         this.elems[ext].forEach(elem => {
             let item = {};
 
+            item.id = this.itemID++;
             item.name = this._buildName(elem, ext);
             item.content = elem.outerHTML;
             item.ext = ext;
+            item.selected = true;
 
             this.items.push(item);
         });
@@ -87,6 +90,7 @@ export default class ImgExtractor {
     }
 
     init() {
+        // TODO: Тут будут последовательно вызываться разные методы сбора картинок
         // Запуск сбора инлайновых svg
         this._collectInlineSvg();
 
@@ -97,7 +101,7 @@ export default class ImgExtractor {
             this.downloadAll();
 
             // Если автоматическое скачивание выключено, 
-        } else {
+        } else if (!this.autodownload && !this.interface) {
             // То инициализируем интерфейс
             this.interface = new ImgExtractorInterface({
                 layout_id: 'img_extractor_interface',
@@ -105,8 +109,9 @@ export default class ImgExtractor {
                 filter: this._getTypeFilter(),
             });
 
-            console.log(this.interface);
-
+        } else if (!this.autodownload && this.interface) {
+            this.interface.setItems(this.getItems());
+            this.interface.setFilter(this._getTypeFilter());
         }
 
     }

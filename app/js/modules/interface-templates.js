@@ -10,21 +10,29 @@ export default class ImgExtractorInterfaceTemplates {
 
     }
 
+    // Возвращает главный шаблон для всего интерфейса
     getLayoutTemplate() {
         return `
             <div class="interface_header">
-                <div class="interface_hide" title="Свернуть панель скачивания">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="${this.colors.text}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="4" y1="12" x2="20" y2="12"/>
-                        <polyline points="14 6 20 12 14 18"/>
-                    </svg>
+                <div class="header_row">
+                    <div class="interface_hide" title="Свернуть панель скачивания">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" 
+                                stroke="${this.colors.text}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="4" y1="12" x2="20" y2="12"/>
+                            <polyline points="14 6 20 12 14 18"/>
+                        </svg>
+                    </div>
+                    <div class="header_text">Выберите изображения для скачивания</div>
                 </div>
-                <div class="header_text">Выберите изображения для скачивания</div>
+                <div class="header_row">
+                    <div class="download_counter"></div>
+                </div>
             </div>
             
             <div class="interface_content"></div>`;
     }
 
+    // TODO: Тут должны быть иконки в base64
     getIcons() {
         let icons = {
             circleEmpty: '',
@@ -32,20 +40,28 @@ export default class ImgExtractorInterfaceTemplates {
         }
     }
 
-    getFilterBtnTemplate(filter_name) {
+    // Возвращает шаблон счетчика выбранных айтемов
+    getDownloadCounterTemplate(params) {
+        return `
+            <div>Выбрано ${params.selected} из ${params.total}</div>`;
+    }
+
+    // Возвращает шаблон кнопки фильтра
+    getFilterBtnTemplate(filter_name, attr) {
         let btn = document.createElement('div');
         btn.className = 'filter_btn active';
-        btn.dataset.filter = filter_name;
+        btn.dataset[attr] = filter_name;
         btn.textContent = `.${filter_name}`;
 
         return btn;
     }
 
+    // Возвращает шаблон одного пункта из списка айтемов
     getListItem(item) {
-        return `<div>${item.name}</div>`;
+        return `<div class="item_name">${item.name}</div>`;
     }
 
-
+    // Возвращает стили для всего интерфейса
     getCommonStyle(vars) {
         return {
             // Контейнер интерфейса
@@ -72,11 +88,15 @@ export default class ImgExtractorInterfaceTemplates {
                 boxShadow: 'none',
             },
 
-            // Заголовок интерфейса
+            // Хедер интерфейса
             '.interface_header': {
                 display: 'flex',
+                flexDirection: 'column',
                 borderBottom: '1px solid ' + this.colors.border,
                 marginBottom: '10px'
+            },
+            '.header_row': {
+                display: 'flex',
             },
             '.interface_hide': {
                 padding: '10px',
@@ -106,8 +126,8 @@ export default class ImgExtractorInterfaceTemplates {
                 alignItems: 'center',
                 justifyContent: 'space-around',
             },
-            '.interface_content': {
-                overflowY: 'auto',
+            '.download_counter': {
+                display: 'flex',
             },
 
             // Фильтр
@@ -130,10 +150,14 @@ export default class ImgExtractorInterfaceTemplates {
                 color: this.colors.accent,
             },
 
+            // Контент
+            '.interface_content': {
+                overflowY: 'auto',
+            },
+
             // Список айтемов картинок
             '.list_item': {
                 border: `1px solid`,
-                // borderColor: this.colors.border,
                 borderColor: 'transparent',
                 borderRadius: '3px',
                 padding: '15px',
@@ -143,11 +167,9 @@ export default class ImgExtractorInterfaceTemplates {
                 opacity: 0.5
             },
             [`.list_item${vars.list_item_slected}`]: {
-                // borderColor: this.colors.accent_alfa,
                 borderColor: this.colors.border,
                 opacity: 1,
             }
-
 
 
         } // Конец стилей
