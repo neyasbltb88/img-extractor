@@ -8,6 +8,11 @@ export default class ImgExtractorInterfaceTemplates {
             accent_alfa: 'rgba(255, 192, 0, .3)',
         };
 
+        this.icons = {
+            circleEmpty: '',
+            okCircled: '',
+        }
+
     }
 
     // Возвращает главный шаблон для всего интерфейса
@@ -33,11 +38,8 @@ export default class ImgExtractorInterfaceTemplates {
     }
 
     // TODO: Тут должны быть иконки в base64
-    getIcons() {
-        let icons = {
-            circleEmpty: '',
-            okCircled: '',
-        }
+    getIcons(name) {
+        return this.icons[name];
     }
 
     // Возвращает шаблон счетчика выбранных айтемов
@@ -70,7 +72,9 @@ export default class ImgExtractorInterfaceTemplates {
                 boxShadow: `0 0 20px ${this.colors.bg_container}`,
                 color: this.colors.text,
                 fontFamily: 'sans-serif',
+                fontSize: '1rem',
                 position: 'fixed',
+                zIndex: 9999,
                 maxWidth: '500px',
                 minWidth: '320px',
                 width: '40%',
@@ -82,6 +86,9 @@ export default class ImgExtractorInterfaceTemplates {
                 transform: 'translate3d(0, 0, 1px)',
                 willChange: 'transform',
                 transition: 'all .25s ease-in-out',
+                zIndex: 9999,
+                display: 'flex',
+                flexDirection: 'column',
             },
             [`${vars.layout_id}.close`]: {
                 transform: 'translate3d(100%, 0, 1px)',
@@ -93,10 +100,13 @@ export default class ImgExtractorInterfaceTemplates {
                 display: 'flex',
                 flexDirection: 'column',
                 borderBottom: '1px solid ' + this.colors.border,
-                marginBottom: '10px'
+                marginBottom: '10px',
+                paddingBottom: '5px',
+                flexShrink: 0,
             },
             '.header_row': {
                 display: 'flex',
+                justifyContent: 'center',
             },
             '.interface_hide': {
                 padding: '10px',
@@ -105,6 +115,7 @@ export default class ImgExtractorInterfaceTemplates {
                 justifyContent: 'center',
                 cursor: 'pointer',
                 transition: 'transform .25s ease-in-out',
+                boxSizing: 'content-box',
             },
             '.interface_hide svg': {
                 transition: 'transform .25s ease-in-out',
@@ -128,13 +139,15 @@ export default class ImgExtractorInterfaceTemplates {
             },
             '.download_counter': {
                 display: 'flex',
+                fontSize: '.8em',
             },
 
             // Фильтр
             '.filter_wrap': {
                 display: 'flex',
                 justifyContent: 'space-between',
-                marginBottom: '10px'
+                marginBottom: '10px',
+                flexShrink: 0
             },
             '.filter_btn': {
                 border: '1px solid',
@@ -153,9 +166,15 @@ export default class ImgExtractorInterfaceTemplates {
             // Контент
             '.interface_content': {
                 overflowY: 'auto',
+                flexGrow: 1,
+                display: 'flex',
+                flexDirection: 'column',
             },
 
             // Список айтемов картинок
+            '.list_wrap': {
+                overflowY: 'auto',
+            },
             '.list_item': {
                 border: `1px solid`,
                 borderColor: 'transparent',
