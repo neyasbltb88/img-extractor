@@ -200,11 +200,13 @@ export default class ImgExtractorInterfaceTemplates {
                 width: '70px',
                 height: 'inherit',
                 minHeight: '50px',
-                marginRight: '10px',
                 alignSelf: 'stretch',
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
+                padding: '4px',
+                margin: '-1px',
+                boxSizing: 'border-box',
             },
             '.item_preview svg': {
                 minWidth: '50px',
@@ -212,9 +214,14 @@ export default class ImgExtractorInterfaceTemplates {
                 position: 'static',
                 transform: 'none',
             },
+            [`.list_item${vars.list_item_slected} .item_preview`]: {
+                padding: '3px',
+                margin: 0,
+            },
             '.item_info': {
                 display: 'flex',
                 alignItems: 'center',
+                marginLeft: '10px',
             },
             '.item_name': {
 
