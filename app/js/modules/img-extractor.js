@@ -66,6 +66,7 @@ export default class ImgExtractor {
             item.name = this._buildName(elem, ext);
             item.content = elem.outerHTML;
             item.ext = ext;
+            item.type = 'inline_svg';
             item.selected = true;
 
             this.items.push(item);

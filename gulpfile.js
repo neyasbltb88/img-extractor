@@ -151,15 +151,15 @@ gulp.task('watch', ['sass', 'js', 'browser-sync'], function() {
     gulp.watch(['app/**/*.html', 'app/**/*.json'], browserSync.reload)
 })
 
-gulp.task('build', ['removedist', 'sass'], function() {
+gulp.task('build', ['removedist'], function() {
     let file = 'app/js/app.js'
     let file_name = 'imgextractor.js'
     let bundler = browserify(file, { debug: true })
         .transform(babelify, {
             presets: ["@babel/preset-env"]
         });
-    bundle_js_build(bundler, file_name)
 
+    bundle_js_build(bundler, file_name)
 })
 
 

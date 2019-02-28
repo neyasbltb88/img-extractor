@@ -1,5 +1,5 @@
 export default class ImgExtractorInterfaceTemplates {
-    constructor(params = {}) {
+    constructor() {
         this.colors = {
             bg_container: 'rgba(0, 0, 0, .7)',
             text: 'rgb(195, 207, 224)',
@@ -60,7 +60,12 @@ export default class ImgExtractorInterfaceTemplates {
 
     // Возвращает шаблон одного пункта из списка айтемов
     getListItem(item) {
-        return `<div class="item_name">${item.name}</div>`;
+        return `
+        <div class="item_preview ${item.type}">${item.type === 'inline_svg' ? item.content : ''}</div>
+        <div class="item_info">
+            <div class="item_name">${item.name}</div>
+        </div>
+        `;
     }
 
     // Возвращает стили для всего интерфейса
@@ -86,7 +91,6 @@ export default class ImgExtractorInterfaceTemplates {
                 transform: 'translate3d(0, 0, 1px)',
                 willChange: 'transform',
                 transition: 'all .25s ease-in-out',
-                zIndex: 9999,
                 display: 'flex',
                 flexDirection: 'column',
             },
@@ -176,10 +180,12 @@ export default class ImgExtractorInterfaceTemplates {
                 overflowY: 'auto',
             },
             '.list_item': {
+                display: 'flex',
+                alignItems: 'stretch',
                 border: `1px solid`,
                 borderColor: 'transparent',
                 borderRadius: '3px',
-                padding: '15px',
+                padding: '0',
                 marginBottom: '5px',
                 backgroundColor: this.colors.bg_container,
                 cursor: 'pointer',
@@ -188,6 +194,30 @@ export default class ImgExtractorInterfaceTemplates {
             [`.list_item${vars.list_item_slected}`]: {
                 borderColor: this.colors.border,
                 opacity: 1,
+            },
+            '.item_preview': {
+                backgroundColor: this.colors.border,
+                width: '70px',
+                height: 'inherit',
+                minHeight: '50px',
+                marginRight: '10px',
+                alignSelf: 'stretch',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+            },
+            '.item_preview svg': {
+                minWidth: '50px',
+                height: '100%',
+                position: 'static',
+                transform: 'none',
+            },
+            '.item_info': {
+                display: 'flex',
+                alignItems: 'center',
+            },
+            '.item_name': {
+
             }
 
 
